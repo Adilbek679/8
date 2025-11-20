@@ -164,4 +164,4 @@ while True:
           sys.exit()        
          
     pygame.display.update()
-    FramePerSec.tick(FPS)
+    FramePerSec.tick(FPS) 
