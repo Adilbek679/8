@@ -106,11 +106,29 @@ def draw_rhombus(surface, color, start, end, width=0):
     points = [clamp_to_canvas(p) for p in points]
     pygame.draw.polygon(surface, color, points, width)
 
+# Draw right triangle
+def draw_right_triangle(surface, color, start, end, width=0):
+    start = clamp_to_canvas(start)
+    end = clamp_to_canvas(end)
+
+    x1, y1 = start
+    x2, y2 = end
+
+    p1 = (x1, y1)       
+    p2 = (x2, y1)      
+    p3 = (x1, y2)       
+
+    points = [clamp_to_canvas(p1), clamp_to_canvas(p2), clamp_to_canvas(p3)]
+    pygame.draw.polygon(surface, color, points, width)
+
+
 # Draw top panel UI with shape icons and color buttons
 def draw_ui(mouse_down=False):
     pygame.draw.rect(screen, PANEL_COLOR, (0, 0, WIDTH, panel_height))
     shapes_funcs = [draw_rect_icon, draw_circle_icon, draw_square_icon,
-                    draw_triangle_icon, draw_rhombus_icon, draw_brush_icon]
+                    draw_triangle_icon, draw_rhombus_icon, draw_brush_icon,
+                    draw_right_triangle_icon]
+
     for i, func in enumerate(shapes_funcs):
         x = margin + i*(button_size+margin)
         color_bg = HIGHLIGHT_COLOR if active_shape == i and (i != 5 or mouse_down) else (80,80,80)
@@ -139,6 +157,9 @@ def draw_rhombus_icon(x, y):
     pygame.draw.polygon(screen, (230,230,230), points, 2)
 def draw_brush_icon(x, y):
     pygame.draw.line(screen, (230,230,230), (x+10, y+35), (x+40, y+15), 3)
+def draw_right_triangle_icon(x, y):
+    points = [(x+10, y+40), (x+40, y+40), (x+10, y+10)]
+    pygame.draw.polygon(screen, (230,230,230), points, 2)
 
 # Draw all saved paintings
 def draw_paintings():
@@ -156,6 +177,9 @@ def draw_paintings():
             draw_rhombus(screen, color, start, end)
         elif shape == 5:
             pygame.draw.line(screen, color, start, end, 5)
+        elif shape == 6:
+            draw_right_triangle(screen, color, start, end)
+
 
 # Draw the current shape being drawn
 def draw_current(start, end):
@@ -175,6 +199,9 @@ def draw_paintings_helper(shape, color, start, end):
         draw_rhombus(screen, color, start, end)
     elif shape == 5:
         pygame.draw.line(screen, color, start, end, 5)
+    elif shape == 6:
+        draw_right_triangle(screen, color, start, end)
+
 
 running = True
 while running:
@@ -192,7 +219,7 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.MOUSEBUTTONDOWN:
-            shapes_rects = [pygame.Rect(margin + i*(button_size+margin), margin, button_size, button_size) for i in range(6)]
+            shapes_rects = [pygame.Rect(margin + i*(button_size+margin), margin, button_size, button_size) for i in range(7)]
             for i, rect in enumerate(shapes_rects):
                 if rect.collidepoint(event.pos):
                     active_shape = i
